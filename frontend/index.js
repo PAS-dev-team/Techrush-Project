@@ -216,7 +216,7 @@ form.addEventListener("submit",async (e)=>{
 
     try{
 
-        const response=await fetch(`${API_URL}/api/login`,{
+        const response=await fetch(`${API_URL}/api/auth/login`,{
 
             method:"POST",
 
@@ -232,11 +232,12 @@ form.addEventListener("submit",async (e)=>{
 
         if(!response.ok){
 
-            throw new Error(data.error || "Login failed");
+            throw new Error(Array.isArray(data?.error) ? data.error.map(e => e.message).join(", ") : (data?.message || "Login failed"));
 
         }
 
-        localStorage.setItem("user",JSON.stringify(data.user));
+        localStorage.setItem("token", data?.data?.token || "");
+        localStorage.setItem("user", JSON.stringify(data?.data?.user || {}));
 
         window.location.href="role-selection.html";
 

@@ -11,7 +11,7 @@ if (registerForm) {
 
         e.preventDefault();
 
-        const fullname = document.getElementById("fullname").value.trim();
+        const name = document.getElementById("fullname").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
@@ -28,7 +28,7 @@ if (registerForm) {
 
         try {
 
-            const response = await fetch(`${API_URL}/api/register`, {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
 
                 method: "POST",
 
@@ -36,17 +36,18 @@ if (registerForm) {
                     "Content-Type": "application/json",
                 },
 
-                body: JSON.stringify({ fullname, email, password }),
+                body: JSON.stringify({ name, email, password }),
 
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Registration failed");
+                throw new Error(Array.isArray(data?.error) ? data.error.map(e => e.message).join(", ") : (data?.message || "Registration failed"));
             }
 
-            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("token", data?.data?.token || "");
+            localStorage.setItem("user", JSON.stringify(data?.data?.user || {}));
 
             window.location.href = "role-selection.html";
 

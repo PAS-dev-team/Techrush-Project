@@ -24,46 +24,17 @@ roleCards.forEach((card) => {
 
 });
 
-continueBtn.addEventListener("click", async () => {
+continueBtn.addEventListener("click", () => {
 
     if (!selectedRole) return;
 
-    let user = JSON.parse(localStorage.getItem("user") || "null");
+    localStorage.setItem("role", selectedRole);
 
     continueBtn.disabled = true;
     continueBtn.innerHTML = "Saving...";
 
-    try {
-
-        const response = await fetch(`${API_URL}/api/role`, {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json",
-            },
-
-            body: JSON.stringify({ email: user ? user.email : "", role: selectedRole }),
-
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Failed to save role");
-        }
-
-        localStorage.setItem("user", JSON.stringify(data.user));
-
+    setTimeout(() => {
         window.location.href = "index.html";
-
-    } catch (err) {
-
-        alert(err.message || "Something went wrong.");
-
-        continueBtn.disabled = false;
-        continueBtn.innerHTML = 'Continue <i class="fa-solid fa-arrow-right"></i>';
-
-    }
+    }, 400);
 
 });
