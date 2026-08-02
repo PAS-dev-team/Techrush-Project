@@ -1,32 +1,32 @@
 const express = require("express");
+const pool = require("./db");
 
 const app = express();
-
 const PORT = process.env.PORT || 8080;
 
-// Test route
 app.get("/", (req, res) => {
     res.send("🚀 Backend is working on Railway!");
 });
 
-// Health check
-app.get("/health", (req, res) => {
-    res.json({
-        status: "OK",
-        message: "Server is running",
-        port: PORT
-    });
+app.get("/health", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT NOW()");
+
+        res.json({
+            status: "OK",
+            database: "Connected",
+            time: result.rows[0].now,
+        });
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).json({
+            status: "Database Error",
+            error: err.message,
+        });
+    }
 });
 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
-});
-
-// database check
-app.get("/database", (req, res) => {
-    res.json({
-        status: "OK",
-        message: "Database is connected",
-        port: PORT
-    });
 });
