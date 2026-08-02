@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ORGANIZER
+  VOLUNTEER
+  ATTENDEE
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum AssignmentStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model User {
+  id                Int                    @id @default(autoincrement())
+  name              String
+  email             String                 @unique
+  passwordHash      String
+  role              Role                   @default(ATTENDEE)
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  createdEvents     Event[]                @relation("EventOrganizer")
+  registrations     Registration[]
+  volunteerAssignments VolunteerAssignment[]
+
+  @@map("users")
+}
+
+model Event {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String      @db.Text
+  venue       String
+  capacity    Int
+  startTime   DateTime
+  endTime     DateTime
+  status      EventStatus @default(UPCOMING)
+  bannerImage String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  createdBy   Int
+  organizer   User      @relation("EventOrganizer", fields: [createdBy], references: [id])
+
+  registrations       Registration[]
+  volunteerAssignments VolunteerAssignment[]
+  announcements       Announcement[]
+
+  @@map("events")
+}
+
+model Registration {
+  id           Int       @id @default(autoincrement())
+  qrToken      String    @unique
+  registeredAt DateTime  @default(now())
+  checkedIn    Boolean   @default(false)
+  checkedOut   Boolean   @default(false)
+  checkInTime  DateTime?
+  checkOutTime DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  userId  Int
+  user    User  @relation(fields: [userId], references: [id])
+  eventId Int
+  event   Event @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, eventId])
+  @@map("registrations")
+}
+
+model VolunteerAssignment {
+  id          Int              @id @default(autoincrement())
+  task        String
+  status      AssignmentStatus @default(PENDING)
+  remarks     String?
+  assignedAt  DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  eventId     Int
+  event       Event @relation(fields: [eventId], references: [id])
+  volunteerId Int
+  volunteer   User  @relation(fields: [volunteerId], references: [id])
+
+  @@map("volunteer_assignments")
+}
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  eventId   Int
+  event     Event @relation(fields: [eventId], references: [id])
+  createdBy Int
+
+  @@map("announcements")
+}
