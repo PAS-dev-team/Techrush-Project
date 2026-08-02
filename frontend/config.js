@@ -1,0 +1,1 @@
+const API_URL = "https://techrush-project-production.up.railway.app";

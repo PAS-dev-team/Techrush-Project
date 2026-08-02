@@ -2,9 +2,6 @@
 node_modules/
 .env
 
-# Frontend config
-frontend/config.js
-
 # Logs
 *.log
 
