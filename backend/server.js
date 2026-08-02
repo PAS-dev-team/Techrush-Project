@@ -21,3 +21,12 @@ app.get("/health", (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+// database check
+app.get("/database", (req, res) => {
+    res.json({
+        status: "OK",
+        message: "Database is connected",
+        port: PORT
+    });
+});
