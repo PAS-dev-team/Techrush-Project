@@ -9,6 +9,13 @@ const qrToken = () => crypto.randomUUID();
 async function main() {
   console.log("Seeding database...");
 
+  const existingCount = await prisma.user.count();
+
+  if (existingCount > 0) {
+    console.log(`Database already has ${existingCount} users. Skipping seed to avoid duplicates.`);
+    return;
+  }
+
   const hash = (password) => bcrypt.hashSync(password, 10);
 
   const admin = await prisma.user.upsert({

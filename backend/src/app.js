@@ -14,6 +14,15 @@ app.use(cors({ origin: process.env.CLIENT_URL || "*", credentials: true }));
 app.use(express.json());
 app.use(morgan("combined"));
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "EventOS API",
+    message: "Backend is running",
+    health: "/health",
+  });
+});
+
 app.get("/health", (req, res) => {
   res.status(200).json({ success: true, status: "OK", time: new Date().toISOString() });
 });
