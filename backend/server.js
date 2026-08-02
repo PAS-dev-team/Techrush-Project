@@ -2,23 +2,22 @@ const express = require("express");
 
 const app = express();
 
-// Railway provides PORT automatically
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Test route
 app.get("/", (req, res) => {
-    res.send("🚀 Railway deployment successful!");
+    res.send("🚀 Backend is working on Railway!");
 });
 
 // Health check
 app.get("/health", (req, res) => {
     res.json({
         status: "OK",
-        uptime: process.uptime(),
-        timestamp: new Date()
+        message: "Server is running",
+        port: PORT
     });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
 });
