@@ -195,32 +195,59 @@ document.addEventListener("mousemove",(e)=>{
 
 
 /* ---------------------------------------------------------
-        FAKE LOGIN
+        LOGIN SUBMIT
 --------------------------------------------------------- */
 
 const form=document.querySelector("form");
 
 if(form){
 
-form.addEventListener("submit",(e)=>{
+form.addEventListener("submit",async (e)=>{
 
     e.preventDefault();
+
+    const email=document.getElementById("email").value.trim();
+    const password=passwordInput ? passwordInput.value : "";
 
     const button=document.querySelector(".login-btn");
 
     button.innerHTML="Logging in...";
-
     button.disabled=true;
 
-    setTimeout(()=>{
+    try{
+
+        const response=await fetch(`${API_URL}/api/login`,{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json",
+            },
+
+            body:JSON.stringify({email,password}),
+
+        });
+
+        const data=await response.json();
+
+        if(!response.ok){
+
+            throw new Error(data.error || "Login failed");
+
+        }
+
+        localStorage.setItem("user",JSON.stringify(data.user));
+
+        window.location.href="role-selection.html";
+
+    }catch(err){
+
+        alert(err.message||"Something went wrong.");
 
         button.innerHTML="Login";
-
         button.disabled=false;
 
-        alert("Backend will be connected later.");
-
-    },1800);
+    }
 
 });
 
