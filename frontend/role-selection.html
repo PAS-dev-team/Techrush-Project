@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventOS | Choose Role</title>
+
+    <!-- Google Font -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Shared Auth CSS -->
+
+    <link rel="stylesheet"
+          href="role-selection.css">
+
+</head>
+
+<body>
+
+    <!-- Background -->
+
+    <div class="background"></div>
+
+    <!-- Main Container -->
+
+    <main class="container">
+
+        <!-- LEFT SIDE -->
+
+        <section class="hero">
+
+            <span class="tag">
+
+                EventOS Platform
+
+            </span>
+
+            <h1>
+
+                Welcome to
+                <br>
+                EventOS
+
+            </h1>
+
+            <h2>
+
+                One platform.
+                <br>
+                Three different experiences.
+
+            </h2>
+
+            <p>
+
+                Choose how you'll use EventOS.
+                Your dashboard, permissions and tools
+                will be customized according to your role.
+
+            </p>
+
+        </section>
+
+        <!-- RIGHT SIDE -->
+
+        <section class="selection-section">
+
+            <div class="selection-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        Choose Your Role
+
+                    </h3>
+
+                    <p>
+
+                        Select the role that best describes you.
+
+                    </p>
+
+                </div>
+
+                <!-- Role Cards -->
+
+                <div class="roles">
+
+                    <!-- Attendee -->
+
+                    <div class="role-card attendee"
+                         data-role="attendee">
+
+                        <div class="role-icon">
+
+                            <i class="fa-solid fa-ticket"></i>
+
+                        </div>
+
+                        <h4>
+
+                            Attendee
+
+                        </h4>
+
+                        <p>
+
+                            Join events,
+                            register quickly,
+                            download certificates
+                            and stay updated.
+
+                        </p>
+
+                    </div>
+
+                    <!-- Volunteer -->
+
+                    <div class="role-card volunteer"
+                         data-role="volunteer">
+
+                        <div class="role-icon">
+
+                            <i class="fa-solid fa-user-group"></i>
+
+                        </div>
+
+                        <h4>
+
+                            Volunteer
+
+                        </h4>
+
+                        <p>
+
+                            Manage attendance,
+                            scan QR codes
+                            and assist organizers.
+
+                        </p>
+
+                    </div>
+
+                    <!-- Organizer -->
+
+                    <div class="role-card organizer"
+                         data-role="organizer">
+
+                        <div class="role-icon">
+
+                            <i class="fa-solid fa-calendar-check"></i>
+
+                        </div>
+
+                        <h4>
+
+                            Organizer
+
+                        </h4>
+
+                        <p>
+
+                            Create events,
+                            manage volunteers,
+                            certificates and analytics.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- Continue -->
+
+                <button
+                    id="continueBtn"
+                    disabled>
+
+                    Continue
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+                <div class="bottom-text">
+
+                    Already selected the wrong account?
+
+                    <a href="register.html">
+
+                        Go Back
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="js/role.js"></script>
+
+</body>
+
+</html>

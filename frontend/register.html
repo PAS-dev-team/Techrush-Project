@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EventOS | Register</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="register.css">
+
+</head>
+
+<body>
+
+    <!-- Decorative Background -->
+    <div class="background"></div>
+
+    <div class="container">
+
+        <!-- LEFT SIDE -->
+
+        <div class="hero">
+
+            <div class="tag">
+                EventOS Platform
+            </div>
+
+            <h1>EventOS</h1>
+
+            <h2>
+                The smarter way
+                <br>
+                to manage events.
+            </h2>
+
+            <p>
+                Join the EventOS platform and experience a modern,
+                intelligent event management system designed for
+                organizers, volunteers and attendees.
+            </p>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div class="login-container">
+
+            <div class="login-card">
+
+                <div class="login-header">
+
+                    <h3>Create Your Account</h3>
+
+                    <p>
+                        Register once and start managing events effortlessly.
+                    </p>
+
+                </div>
+
+                <form id="registerForm">
+
+                    <!-- Full Name -->
+
+                    <div class="input-group">
+
+                        <label>Full Name</label>
+
+                        <div class="input-box">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <input
+                                type="text"
+                                id="fullname"
+                                placeholder="Enter your full name"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Email -->
+
+                    <div class="input-group">
+
+                        <label>Email Address</label>
+
+                        <div class="input-box">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Enter your email"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Password -->
+
+                    <div class="input-group">
+
+                        <label>Password</label>
+
+                        <div class="input-box">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Create a password"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Confirm Password -->
+
+                    <div class="input-group">
+
+                        <label>Confirm Password</label>
+
+                        <div class="input-box">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Confirm your password"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Terms -->
+
+                    <div class="remember">
+
+                        <label>
+
+                            <input
+                                type="checkbox"
+                                required>
+
+                            I agree to the
+
+                            <a href="#">
+
+                                Terms & Conditions
+
+                            </a>
+
+                        </label>
+
+                    </div>
+
+                    <!-- Register Button -->
+
+                    <button
+                        type="submit"
+                        class="login-btn">
+
+                        Register
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+                <div class="bottom-text">
+
+                    Already have an account?
+
+                    <a href="index.html">
+
+                        Login
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="register.js"></script>
+
+</body>
+
+</html>
