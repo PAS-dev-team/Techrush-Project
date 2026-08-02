@@ -1,2 +1,2 @@
 release: npx prisma migrate deploy && npm run prisma:seed
-web: node src/server.js
+web: sh -c "npx prisma migrate deploy && npm run prisma:seed && node src/server.js"
