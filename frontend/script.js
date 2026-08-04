@@ -1,55 +1,79 @@
 /* ==========================================================
    EVENTOS — LOGIN PAGE
-   Handles the password visibility toggle and the login form
-   submission. No backend is connected yet, so a successful
-   submit simply moves the user forward into the app so the
-   rest of the product flow can be reviewed end-to-end.
 ========================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-  initPasswordToggle();
-  initLoginForm();
+document.addEventListener("DOMContentLoaded", () => {
+    initPasswordToggle();
+    initLoginForm();
 });
 
-/**
- * Toggles the password field between hidden and visible text,
- * swapping the eye / eye-slash icon to match.
- */
 function initPasswordToggle() {
-  const toggle = document.getElementById('togglePassword');
-  const passwordInput = document.getElementById('password');
+    const toggle = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
 
-  if (!toggle || !passwordInput) return;
+    if (!toggle || !passwordInput) return;
 
-  toggle.addEventListener('click', () => {
-    const showing = passwordInput.type === 'text';
-    passwordInput.type = showing ? 'password' : 'text';
-    toggle.classList.toggle('fa-eye', showing);
-    toggle.classList.toggle('fa-eye-slash', !showing);
-  });
+    toggle.addEventListener("click", () => {
+        const showing = passwordInput.type === "text";
+
+        passwordInput.type = showing ? "password" : "text";
+
+        toggle.classList.toggle("fa-eye", showing);
+        toggle.classList.toggle("fa-eye-slash", !showing);
+    });
 }
 
-/**
- * Intercepts the login form submit. There is no backend yet,
- * so this only performs basic client-side checks and then
- * continues into the dashboard as a stand-in for a real
- * authentication response.
- */
 function initLoginForm() {
-  const form = document.getElementById('loginForm');
-  if (!form) return;
+    const form = document.getElementById("loginForm");
 
-  form.addEventListener('submit', (event) => {
+    if (!form) return;
+
+    form.addEventListener("submit", login);
+}
+
+async function login(event) {
     event.preventDefault();
 
+    const form = event.target;
+
     if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
+        form.reportValidity();
+        return;
     }
 
-    // NOTE: replace with a real authentication request once the
-    // backend is available. For now this simulates a successful
-    // login so the rest of the flow can be reviewed.
-    window.location.href = 'dashboard.html';
-  });
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    try {
+        const response = await fetch(`${API_URL}/api/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            alert(result.message || "Login failed");
+            return;
+        }
+
+        // Save JWT
+        localStorage.setItem("token", result.data.token);
+
+        // Save user info (optional)
+        localStorage.setItem("user", JSON.stringify(result.data.user));
+
+        // Redirect
+        window.location.href = "dashboard.html";
+
+    } catch (err) {
+        console.error(err);
+        alert("Unable to connect to server.");
+    }
 }

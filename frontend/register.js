@@ -1,63 +1,125 @@
 /* ==========================================================
    EVENTOS — REGISTER PAGE
-   Validates that the password and confirmation match, then
-   continues on to role selection. No backend is connected
-   yet, so account creation is simulated client-side only.
 ========================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-  initRegisterForm();
+document.addEventListener("DOMContentLoaded", () => {
+    initRegisterForm();
 });
 
 function initRegisterForm() {
-  const form = document.getElementById('registerForm');
-  if (!form) return;
 
-  const password = document.getElementById('password');
-  const confirmPassword = document.getElementById('confirmPassword');
+    const form = document.getElementById("registerForm");
 
-  form.addEventListener('submit', (event) => {
+    if (!form) return;
+
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+
+    form.addEventListener("submit", register);
+
+    confirmPassword.addEventListener("input", () => {
+        clearFieldError(confirmPassword);
+    });
+
+}
+
+async function register(event) {
+
     event.preventDefault();
 
+    const form = event.target;
+
     if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
+        form.reportValidity();
+        return;
     }
 
-    if (password.value !== confirmPassword.value) {
-      showFieldError(confirmPassword, "Passwords don't match.");
-      confirmPassword.focus();
-      return;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
+
+        showFieldError(
+            document.getElementById("confirmPassword"),
+            "Passwords don't match."
+        );
+
+        return;
+
     }
-    clearFieldError(confirmPassword);
 
-    // NOTE: replace with a real registration request once the
-    // backend is available. For now this simulates a successful
-    // sign-up and continues the onboarding flow.
-    window.location.href = 'role-selection.html';
-  });
+    clearFieldError(document.getElementById("confirmPassword"));
 
-  // Clear the error as soon as the user starts fixing it.
-  confirmPassword.addEventListener('input', () => clearFieldError(confirmPassword));
+    try {
+
+        const response = await fetch(`${API_URL}/api/auth/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                password,
+            }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          if (Array.isArray(result.error) && result.error.length > 0) {
+              alert(result.error[0].message);
+          } else {
+              alert(result.message || "Registration failed.");
+          }
+          return;
+        }
+
+        localStorage.setItem("token", result.data.token);
+        localStorage.setItem("user", JSON.stringify(result.data.user));
+
+        window.location.href = "role-selection.html";
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Unable to connect to the server.");
+
+    }
+
 }
 
 function showFieldError(input, message) {
-  clearFieldError(input);
 
-  const box = input.closest('.input-box');
-  box.classList.add('input-error');
+    clearFieldError(input);
 
-  const errorEl = document.createElement('p');
-  errorEl.className = 'field-error';
-  errorEl.textContent = message;
-  box.insertAdjacentElement('afterend', errorEl);
+    const box = input.closest(".input-box");
+
+    box.classList.add("input-error");
+
+    const error = document.createElement("p");
+
+    error.className = "field-error";
+    error.textContent = message;
+
+    box.insertAdjacentElement("afterend", error);
+
 }
 
 function clearFieldError(input) {
-  const box = input.closest('.input-box');
-  box.classList.remove('input-error');
 
-  const group = box.parentElement;
-  const existingError = group.querySelector('.field-error');
-  if (existingError) existingError.remove();
+    const box = input.closest(".input-box");
+
+    box.classList.remove("input-error");
+
+    const group = box.parentElement;
+
+    const error = group.querySelector(".field-error");
+
+    if (error) {
+        error.remove();
+    }
+
 }
