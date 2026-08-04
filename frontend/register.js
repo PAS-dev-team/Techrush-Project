@@ -1,65 +1,63 @@
 /* ==========================================================
-        EVENTOS REGISTER PAGE
-        API Integration
+   EVENTOS — REGISTER PAGE
+   Validates that the password and confirmation match, then
+   continues on to role selection. No backend is connected
+   yet, so account creation is simulated client-side only.
 ========================================================== */
 
-const registerForm = document.getElementById("registerForm");
+document.addEventListener('DOMContentLoaded', () => {
+  initRegisterForm();
+});
 
-if (registerForm) {
+function initRegisterForm() {
+  const form = document.getElementById('registerForm');
+  if (!form) return;
 
-    registerForm.addEventListener("submit", async (e) => {
+  const password = document.getElementById('password');
+  const confirmPassword = document.getElementById('confirmPassword');
 
-        e.preventDefault();
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-        const name = document.getElementById("fullname").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
 
-        const button = document.querySelector(".login-btn");
+    if (password.value !== confirmPassword.value) {
+      showFieldError(confirmPassword, "Passwords don't match.");
+      confirmPassword.focus();
+      return;
+    }
+    clearFieldError(confirmPassword);
 
-        if (password !== confirmPassword) {
-            alert("Passwords do not match.");
-            return;
-        }
+    // NOTE: replace with a real registration request once the
+    // backend is available. For now this simulates a successful
+    // sign-up and continues the onboarding flow.
+    window.location.href = 'role-selection.html';
+  });
 
-        button.innerHTML = "Registering...";
-        button.disabled = true;
+  // Clear the error as soon as the user starts fixing it.
+  confirmPassword.addEventListener('input', () => clearFieldError(confirmPassword));
+}
 
-        try {
+function showFieldError(input, message) {
+  clearFieldError(input);
 
-            const response = await fetch(`${API_URL}/api/auth/register`, {
+  const box = input.closest('.input-box');
+  box.classList.add('input-error');
 
-                method: "POST",
+  const errorEl = document.createElement('p');
+  errorEl.className = 'field-error';
+  errorEl.textContent = message;
+  box.insertAdjacentElement('afterend', errorEl);
+}
 
-                headers: {
-                    "Content-Type": "application/json",
-                },
+function clearFieldError(input) {
+  const box = input.closest('.input-box');
+  box.classList.remove('input-error');
 
-                body: JSON.stringify({ name, email, password }),
-
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(Array.isArray(data?.error) ? data.error.map(e => e.message).join(", ") : (data?.message || "Registration failed"));
-            }
-
-            localStorage.setItem("token", data?.data?.token || "");
-            localStorage.setItem("user", JSON.stringify(data?.data?.user || {}));
-
-            window.location.href = "role-selection.html";
-
-        } catch (err) {
-
-            alert(err.message || "Something went wrong.");
-
-            button.innerHTML = "Register";
-            button.disabled = false;
-
-        }
-
-    });
-
+  const group = box.parentElement;
+  const existingError = group.querySelector('.field-error');
+  if (existingError) existingError.remove();
 }

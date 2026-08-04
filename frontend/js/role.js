@@ -1,40 +1,62 @@
 /* ==========================================================
-        EVENTOS ROLE SELECTION PAGE
-        API Integration
+   EVENTOS — ROLE SELECTION PAGE
+   Lets the user pick a role card, enables Continue once a
+   role is chosen, and routes onward. Only the organizer
+   dashboard exists so far, so the other two roles surface a
+   friendly "coming soon" note instead of a dead link.
 ========================================================== */
 
-const roleCards = document.querySelectorAll(".role-card");
-const continueBtn = document.getElementById("continueBtn");
-
-let selectedRole = null;
-
-roleCards.forEach((card) => {
-
-    card.addEventListener("click", () => {
-
-        roleCards.forEach((c) => c.classList.remove("selected"));
-
-        card.classList.add("selected");
-
-        selectedRole = card.dataset.role;
-
-        continueBtn.disabled = false;
-
-    });
-
+document.addEventListener('DOMContentLoaded', () => {
+  initRoleSelection();
 });
 
-continueBtn.addEventListener("click", () => {
+function initRoleSelection() {
+  const roleCards = document.querySelectorAll('.role-card');
+  const continueBtn = document.getElementById('continueBtn');
+  if (!roleCards.length || !continueBtn) return;
 
+  let selectedRole = null;
+
+  roleCards.forEach((card) => {
+    card.addEventListener('click', () => {
+      roleCards.forEach((c) => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedRole = card.dataset.role;
+      continueBtn.disabled = false;
+      hideComingSoonNote();
+    });
+  });
+
+  continueBtn.addEventListener('click', () => {
     if (!selectedRole) return;
 
-    localStorage.setItem("role", selectedRole);
+    if (selectedRole === 'organizer') {
+      window.location.href = 'dashboard.html';
+      return;
+    }
 
-    continueBtn.disabled = true;
-    continueBtn.innerHTML = "Saving...";
+    // Volunteer and Attendee dashboards aren't built yet.
+    showComingSoonNote();
+  });
+}
 
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 400);
+function showComingSoonNote() {
+  getOrCreateNote().classList.add('show');
+}
 
-});
+function hideComingSoonNote() {
+  const note = document.getElementById('comingSoonNote');
+  if (note) note.classList.remove('show');
+}
+
+function getOrCreateNote() {
+  let note = document.getElementById('comingSoonNote');
+  if (!note) {
+    note = document.createElement('p');
+    note.id = 'comingSoonNote';
+    note.className = 'coming-soon-note';
+    note.textContent = 'That dashboard is coming soon — organizer access is ready now.';
+    document.getElementById('continueBtn').insertAdjacentElement('afterend', note);
+  }
+  return note;
+}
