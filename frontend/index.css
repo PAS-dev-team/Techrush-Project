@@ -45,6 +45,8 @@ body{
 
     inset:0;
 
+    background-color:#0b1220;
+
     background-image:url("assets/login/background.png");
 
     background-size:cover;

@@ -1,0 +1,121 @@
+<section class="view view-attendance" aria-labelledby="attendance-heading">
+
+    <div class="view-header">
+        <div>
+            <span class="page-tag">LIVE ATTENDANCE</span>
+            <h1 id="attendance-heading">Attendance</h1>
+            <p>Track check-ins and check-outs in real time.</p>
+        </div>
+    </div>
+
+    <!-- Live stats -->
+    <section class="attendance-stats">
+
+        <div class="glass-card attendance-stat">
+            <div class="big-number" id="live-attendance-count">387</div>
+            <h4><span class="status live" style="margin-bottom:6px;"><span class="status-dot"></span>Live</span></h4>
+            <h4>Currently Checked In</h4>
+        </div>
+
+        <div class="glass-card attendance-stat">
+            <div class="big-number" id="attendance-percentage">73%</div>
+            <h4>Attendance Rate</h4>
+        </div>
+
+        <div class="glass-card attendance-stat">
+            <div class="big-number" id="checkout-count">0</div>
+            <h4>Checked Out</h4>
+        </div>
+
+    </section>
+
+    <!-- QR placeholders -->
+    <section class="qr-grid">
+
+        <div class="glass-card qr-card">
+            <h3><i class="fa-solid fa-qrcode" aria-hidden="true"></i> Event QR Code</h3>
+            <div class="qr-placeholder" id="event-qr-placeholder">
+                <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+            </div>
+            <p class="chart-caption">A live, refreshing QR code will generate here for attendee self check-in once connected.</p>
+        </div>
+
+        <div class="glass-card qr-card">
+            <h3><i class="fa-solid fa-camera" aria-hidden="true"></i> QR Scanner</h3>
+            <div class="qr-placeholder scanner" id="qr-scanner-placeholder">
+                <i class="fa-solid fa-camera" aria-hidden="true"></i>
+                <span class="scan-line"></span>
+            </div>
+            <p class="chart-caption">Volunteers will scan attendee tickets here during check-in.</p>
+        </div>
+
+    </section>
+
+    <!-- Check-in table -->
+    <section class="glass-card">
+        <div class="section-title">
+            <h2>Check-in Log</h2>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Event</th>
+                        <th>Time</th>
+                        <th>Method</th>
+                    </tr>
+                </thead>
+                <tbody id="checkin-table-body">
+                    <tr>
+                        <td>Rahul Verma</td>
+                        <td>Annual Hackathon 2026</td>
+                        <td>10:42 AM</td>
+                        <td><span class="tag-pill">QR</span></td>
+                    </tr>
+                    <tr>
+                        <td>Ananya Singh</td>
+                        <td>Annual Hackathon 2026</td>
+                        <td>10:39 AM</td>
+                        <td><span class="tag-pill">QR</span></td>
+                    </tr>
+                    <tr>
+                        <td>Devansh Rao</td>
+                        <td>Annual Hackathon 2026</td>
+                        <td>10:31 AM</td>
+                        <td><span class="tag-pill">Manual</span></td>
+                    </tr>
+                    <tr>
+                        <td>Priya Nair</td>
+                        <td>Annual Hackathon 2026</td>
+                        <td>10:27 AM</td>
+                        <td><span class="tag-pill">QR</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Check-out table -->
+    <section class="glass-card">
+        <div class="section-title">
+            <h2>Check-out Log</h2>
+        </div>
+        <div class="table-wrap" id="checkout-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Event</th>
+                        <th>Time</th>
+                        <th>Method</th>
+                    </tr>
+                </thead>
+                <tbody id="checkout-table-body">
+                </tbody>
+            </table>
+            <p class="empty-hint">No check-outs recorded yet — attendees are still checked in.</p>
+        </div>
+    </section>
+
+</section>

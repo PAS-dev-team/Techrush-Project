@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Organizer Dashboard | EventOS</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="dashboard.css">
+
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="background-gradient"></div>
+
+    <!-- ======================================================
+                        APP SHELL
+         Sidebar + Header stay fixed. Only #content-area swaps.
+    ======================================================= -->
+
+    <div class="dashboard-container" id="dashboardContainer">
+
+        <!-- ==================================================
+                            SIDEBAR
+        =================================================== -->
+
+        <aside class="sidebar" id="sidebar">
+
+            <div>
+
+                <!-- Logo -->
+                <div class="logo-section">
+
+                    <div class="logo-circle">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+
+                    <div class="logo-text">
+                        <h2>EventOS</h2>
+                        <p>Smart Event Management</p>
+                    </div>
+
+                </div>
+
+                <!-- Navigation -->
+                <nav aria-label="Primary">
+                    <ul class="nav-links">
+
+                        <li>
+                            <button class="nav-item active" type="button" data-section="dashboard">
+                                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                                <span>Dashboard</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button class="nav-item" type="button" data-section="events">
+                                <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+                                <span>Events</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button class="nav-item" type="button" data-section="volunteers">
+                                <i class="fa-solid fa-users" aria-hidden="true"></i>
+                                <span>Volunteers</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button class="nav-item" type="button" data-section="attendance">
+                                <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+                                <span>Attendance</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button class="nav-item" type="button" data-section="analytics">
+                                <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+                                <span>Analytics</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button class="nav-item" type="button" data-section="settings">
+                                <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                                <span>Settings</span>
+                            </button>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div>
+
+            <!-- Logout -->
+            <button class="logout-btn js-logout" id="logoutBtn" type="button">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                <span>Logout</span>
+            </button>
+
+        </aside>
+
+        <!-- ==================================================
+                            MAIN PANEL
+        =================================================== -->
+
+        <div class="main-panel">
+
+            <!-- Header (fixed — persists across every section) -->
+            <header class="top-header">
+
+                <div class="header-search">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="text" placeholder="Search events, volunteers, attendees…" aria-label="Search">
+                </div>
+
+                <div class="header-actions">
+
+                    <button class="icon-btn" type="button" data-stub="Notifications" aria-label="Notifications">
+                        <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                    </button>
+
+                    <div class="profile-card">
+                        <div class="profile-avatar">PS</div>
+                        <div class="profile-info">
+                            <h3 id="profile-name">Prajwal Shewalkar</h3>
+                            <span>Organizer</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Content area — populated by dashboard.js via fetch() -->
+            <main class="content-area" id="content-area" aria-live="polite">
+            </main>
+
+        </div>
+
+    </div>
+
+    <!-- Toast notifications for not-yet-connected actions -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- JS -->
+    <script src="dashboard.js"></script>
+
+</body>
+
+</html>

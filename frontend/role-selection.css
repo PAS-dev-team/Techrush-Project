@@ -1550,3 +1550,49 @@ transition:
 all .35s ease;
 
 }
+
+/*==========================================================
+                COMING SOON NOTE
+==========================================================*/
+
+.coming-soon-note{
+
+margin-top:0;
+
+max-height:0;
+
+opacity:0;
+
+overflow:hidden;
+
+text-align:center;
+
+font-size:14px;
+
+font-weight:500;
+
+color:#9A6700;
+
+background:rgba(251,191,36,.16);
+
+border:1px solid rgba(251,191,36,.4);
+
+border-radius:14px;
+
+padding:0 16px;
+
+transition:all .35s ease;
+
+}
+
+.coming-soon-note.show{
+
+margin-top:16px;
+
+max-height:80px;
+
+opacity:1;
+
+padding:12px 16px;
+
+}

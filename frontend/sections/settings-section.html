@@ -1,0 +1,201 @@
+<section class="view view-settings" aria-labelledby="settings-heading">
+
+    <div class="view-header">
+        <div>
+            <span class="page-tag">ACCOUNT SETTINGS</span>
+            <h1 id="settings-heading">Settings</h1>
+            <p>Manage your profile, organization and preferences.</p>
+        </div>
+    </div>
+
+    <div class="settings-grid">
+
+        <!-- Profile -->
+        <form class="glass-card" id="profile-form">
+            <div class="settings-card-head">
+                <div class="icon"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
+                <div>
+                    <h3>Profile</h3>
+                    <p>Your personal details as an organizer.</p>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="settings-fullname">Full Name</label>
+                    <input type="text" id="settings-fullname" value="Prajwal Shewalkar">
+                </div>
+                <div class="form-group">
+                    <label for="settings-email">Email Address</label>
+                    <input type="email" id="settings-email" value="prajwal@eventos.com">
+                </div>
+                <div class="form-group">
+                    <label for="settings-role">Role</label>
+                    <input type="text" id="settings-role" value="Organizer" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="settings-phone">Phone Number</label>
+                    <input type="tel" id="settings-phone" placeholder="+91 00000 00000">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" data-stub="Profile changes">Save Changes</button>
+            </div>
+        </form>
+
+        <!-- Organization Details -->
+        <form class="glass-card" id="org-details-form">
+            <div class="settings-card-head">
+                <div class="icon"><i class="fa-solid fa-building" aria-hidden="true"></i></div>
+                <div>
+                    <h3>Organization Details</h3>
+                    <p>Shown to attendees on event pages.</p>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="org-name">Organization Name</label>
+                    <input type="text" id="org-name" placeholder="e.g. Innovation Hub Pvt. Ltd.">
+                </div>
+                <div class="form-group">
+                    <label for="org-type">Organization Type</label>
+                    <select id="org-type">
+                        <option>College / University</option>
+                        <option>Company</option>
+                        <option>Non-profit</option>
+                        <option>Community Group</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="org-contact-email">Contact Email</label>
+                    <input type="email" id="org-contact-email" placeholder="contact@organization.com">
+                </div>
+                <div class="form-group full">
+                    <label for="org-address">Address</label>
+                    <input type="text" id="org-address" placeholder="City, State">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" data-stub="Organization details">Save Changes</button>
+            </div>
+        </form>
+
+        <!-- Change Password -->
+        <form class="glass-card" id="password-form">
+            <div class="settings-card-head">
+                <div class="icon"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
+                <div>
+                    <h3>Change Password</h3>
+                    <p>Use a strong password you don't use elsewhere.</p>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-password">Confirm New Password</label>
+                    <input type="password" id="confirm-new-password" placeholder="••••••••">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" data-stub="Password update">Update Password</button>
+            </div>
+        </form>
+
+        <!-- Notification Preferences -->
+        <div class="glass-card" id="notification-preferences-form">
+            <div class="settings-card-head">
+                <div class="icon"><i class="fa-solid fa-bell" aria-hidden="true"></i></div>
+                <div>
+                    <h3>Notification Preferences</h3>
+                    <p>Choose what you'd like to hear about.</p>
+                </div>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-row-label">
+                    <h4>Email Notifications</h4>
+                    <p>Registration and check-in summaries.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="track"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-row-label">
+                    <h4>SMS Alerts</h4>
+                    <p>Urgent updates about live events.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="track"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-row-label">
+                    <h4>Event Reminders</h4>
+                    <p>Reminders before your events go live.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="track"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-row-label">
+                    <h4>Volunteer Updates</h4>
+                    <p>Availability changes and task completions.</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="track"></span>
+                </label>
+            </div>
+
+        </div>
+
+        <!-- Theme -->
+        <div class="glass-card full" id="theme-preferences">
+            <div class="settings-card-head">
+                <div class="icon"><i class="fa-solid fa-palette" aria-hidden="true"></i></div>
+                <div>
+                    <h3>Theme</h3>
+                    <p>EventOS is light-themed today, with more options on the way.</p>
+                </div>
+            </div>
+            <div class="theme-options">
+                <div class="theme-option selected">
+                    Light
+                </div>
+                <div class="theme-option disabled">
+                    Dark
+                    <span class="soon-tag">Coming soon</span>
+                </div>
+                <div class="theme-option disabled">
+                    Auto
+                    <span class="soon-tag">Coming soon</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout / Danger Zone -->
+        <div class="glass-card full danger-zone">
+            <p><strong>Log out of EventOS</strong><br>You'll need to sign back in to access your dashboard.</p>
+            <button class="btn btn-danger js-logout" type="button" id="settings-logout-btn">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                Logout
+            </button>
+        </div>
+
+    </div>
+
+</section>
