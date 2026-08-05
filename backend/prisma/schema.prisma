@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -46,7 +46,7 @@ model User {
 model Event {
   id          Int         @id @default(autoincrement())
   title       String
-  description String      @db.Text
+  description String
   venue       String
   capacity    Int
   startTime   DateTime
@@ -91,6 +91,10 @@ model VolunteerAssignment {
   task        String
   status      AssignmentStatus @default(PENDING)
   remarks     String?
+  checkedIn   Boolean          @default(false)
+  checkedOut  Boolean          @default(false)
+  checkInTime DateTime?
+  checkOutTime DateTime?
   assignedAt  DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -105,7 +109,7 @@ model VolunteerAssignment {
 model Announcement {
   id        Int      @id @default(autoincrement())
   title     String
-  message   String   @db.Text
+  message   String
   createdAt DateTime @default(now())
 
   eventId   Int

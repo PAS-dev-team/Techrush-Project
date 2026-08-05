@@ -28,6 +28,24 @@ class AuthController {
       next(err);
     }
   }
+
+  async updateProfile(req, res, next) {
+    try {
+      const updatedUser = await authService.updateProfile(req.user.id, req.body);
+      return success(res, updatedUser, "Profile updated successfully");
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async updatePassword(req, res, next) {
+    try {
+      const result = await authService.updatePassword(req.user.id, req.body);
+      return success(res, result, "Password updated successfully");
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = new AuthController();

@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./routes/auth.routes");
+const eventRoutes = require("./routes/event.routes");
+const analyticsRoutes = require("./routes/analytics.routes");
 const { notFound, errorHandler } = require("./middleware/error");
 
 const app = express();
@@ -32,6 +34,8 @@ app.get("/health", (req, res) => {
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true });
 
 app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -15,7 +15,7 @@ function toSafeUser(user) {
 }
 
 class AuthService {
-  async register({ name, email, password }) {
+  async register({ name, email, password, role }) {
     const existing = await userRepository.findByEmail(email);
 
     if (existing) {
@@ -23,7 +23,8 @@ class AuthService {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await userRepository.create({ name, email, passwordHash });
+    const userRole = role || "ATTENDEE";
+    const user = await userRepository.create({ name, email, passwordHash, role: userRole });
 
     const token = signToken(user);
     return { token, user: toSafeUser(user) };
@@ -48,6 +49,44 @@ class AuthService {
     }
 
     return toSafeUser(user);
+  }
+
+  async updateProfile(id, { name, email }) {
+    const user = await userRepository.findById(id);
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+
+    if (email && email !== user.email) {
+      const existing = await userRepository.findByEmail(email);
+      if (existing) {
+        throw new AppError("Email is already in use", 409);
+      }
+    }
+
+    const updated = await userRepository.update(id, {
+      ...(name && { name }),
+      ...(email && { email }),
+    });
+
+    return toSafeUser(updated);
+  }
+
+  async updatePassword(id, { currentPassword, newPassword }) {
+    const user = await userRepository.findById(id);
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isMatch) {
+      throw new AppError("Current password is incorrect", 400);
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await userRepository.update(id, { passwordHash });
+
+    return { message: "Password updated successfully" };
   }
 }
 
