@@ -20,6 +20,7 @@ const token = localStorage.getItem("token");
 const contentArea = document.getElementById("content-area");
 const toastContainer = document.getElementById("toastContainer");
 
+
 document.addEventListener("DOMContentLoaded", async () => {
 
     const authenticated = await authenticate();
@@ -65,7 +66,7 @@ async function authenticate() {
         localStorage.setItem("user", JSON.stringify(result.data));
 
         // Update username if element exists
-        const userName = document.getElementById("userName");
+        const userName = document.getElementById("profile-name");
 
         if (userName) {
             userName.textContent = result.data.name;
@@ -104,6 +105,9 @@ async function loadSection(sectionName) {
         }
 
         contentArea.innerHTML = await response.text();
+        if (sectionName === "events") {
+    initializeRegistrationPortal();
+}
 
     } catch (error) {
 
@@ -259,4 +263,34 @@ function escapeHtml(value) {
 
     return div.innerHTML;
 
+}
+
+async function loadRegistrationLink(){
+
+}
+
+async function saveRegistrationLink(){
+
+}
+
+async function editRegistrationLink(){
+
+}
+
+async function deleteRegistrationLink(){
+
+}
+
+function initializeRegistrationPortal() {
+
+    const saveButton = document.getElementById("saveRegistrationLink");
+
+    if (!saveButton) return;
+
+    saveButton.addEventListener("click", saveRegistrationLink);
+
+    // Later you can attach:
+    // openRegistrationLink
+    // editRegistrationLink
+    // deleteRegistrationLink
 }

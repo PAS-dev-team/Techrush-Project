@@ -106,3 +106,71 @@
     </div>
 
 </section>
+
+<div class="glass-card registration-card">
+
+    <div class="section-header">
+
+        <div>
+            <h2>Registration Portal</h2>
+            <p>
+                Paste a Google Form or any public registration URL for participants.
+            </p>
+        </div>
+
+        <i class="fa-solid fa-link section-icon"></i>
+
+    </div>
+
+    <div class="registration-form">
+
+        <input
+            type="url"
+            id="registrationLink"
+            placeholder="https://forms.gle/..."
+        >
+
+        <button
+            id="saveRegistrationLink"
+            class="btn-primary"
+        >
+            Save Link
+        </button>
+
+    </div>
+
+    <div
+        class="saved-link"
+        id="savedLinkContainer"
+    >
+
+        <span id="savedRegistrationLink">
+            No registration link added.
+        </span>
+
+        <div class="link-actions">
+
+            <div class="registration-actions">
+
+    <button class="glass-btn open-btn" id="openRegistrationLink">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span>Open Form</span>
+    </button>
+
+    <button class="glass-btn edit-btn" id="editRegistrationLink">
+        <i class="fa-solid fa-pen"></i>
+        <span>Edit</span>
+    </button>
+
+    <button class="glass-btn delete-btn" id="deleteRegistrationLink">
+        <i class="fa-solid fa-trash"></i>
+        <span>Delete</span>
+    </button>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
