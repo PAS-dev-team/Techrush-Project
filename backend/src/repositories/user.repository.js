@@ -17,6 +17,14 @@ class UserRepository {
     return prisma.user.findMany();
   }
 
+  updateRole(id, role) {
+    return prisma.user.update({ where: { id }, data: { role } });
+  }
+
+  updateProfile(id, data) {
+    return prisma.user.update({ where: { id }, data });
+  }
+
   update(id, data) {
     return prisma.user.update({ where: { id }, data });
   }

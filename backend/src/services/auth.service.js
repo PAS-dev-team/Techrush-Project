@@ -8,6 +8,7 @@ function toSafeUser(user) {
     id: user.id,
     name: user.name,
     email: user.email,
+    phone: user.phone,
     role: user.role,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
@@ -46,6 +47,37 @@ class AuthService {
     if (!user) {
       throw new AppError("User not found", 404);
     }
+
+    return toSafeUser(user);
+  }
+
+  async selectRole(id, role) {
+    const existing = await userRepository.findById(id);
+
+    if (!existing) {
+      throw new AppError("User not found", 404);
+    }
+
+    const prismaRole = role.toUpperCase(); // "organizer" -> "ORGANIZER" etc.
+    const user = await userRepository.updateRole(id, prismaRole);
+
+    // Reissue the token so its embedded role claim (and anything the
+    // client reads from it) reflects the new role immediately.
+    const token = signToken(user);
+    return { token, user: toSafeUser(user) };
+  }
+
+  async updateProfile(id, { name, phone }) {
+    const existing = await userRepository.findById(id);
+
+    if (!existing) {
+      throw new AppError("User not found", 404);
+    }
+
+    const user = await userRepository.updateProfile(id, {
+      name,
+      phone: phone ?? null,
+    });
 
     return toSafeUser(user);
   }

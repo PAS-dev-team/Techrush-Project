@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EventOS | Attendee Dashboard</title>
+
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="attendee-dashboard.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- Background Blur -->
+    <div class="background-blur"></div>
+
+    <!-- Main Container -->
+    <div class="dashboard-container">
+
+        <!-- ================= Sidebar ================= -->
+
+        <aside class="sidebar glass-card">
+
+            <!-- Logo -->
+
+            <div class="logo">
+
+                <div class="logo-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+
+                <div class="logo-text">
+                    <h2>EventOS</h2>
+                    <span>Attendee Portal</span>
+                </div>
+
+            </div>
+
+            <!-- Navigation -->
+
+            <nav class="sidebar-nav">
+
+                <button class="nav-item active" data-section="dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </button>
+
+                <button class="nav-item" data-section="events">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Events</span>
+                </button>
+
+                <button class="nav-item" data-section="tickets">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>My Tickets</span>
+                </button>
+
+                <button class="nav-item" data-section="certificates">
+                    <i class="fa-solid fa-award"></i>
+                    <span>Certificates</span>
+                </button>
+
+                <button class="nav-item" data-section="profile">
+                    <i class="fa-solid fa-user"></i>
+                    <span>My Profile</span>
+                </button>
+
+            </nav>
+
+            <!-- Bottom -->
+
+            <div class="sidebar-bottom">
+
+                <button class="logout-btn js-logout" id="logoutBtn">
+
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                    <span>Logout</span>
+
+                </button>
+
+            </div>
+
+        </aside>
+
+        <!-- ================= Main Content ================= -->
+
+        <main class="main-content">
+
+            <!-- Header -->
+
+            <header class="topbar glass-card">
+
+                <div>
+
+                    <h1 id="page-title">
+                        Dashboard
+                    </h1>
+
+                    <p id="page-subtitle">
+                        Welcome back! Explore and manage your events.
+                    </p>
+
+                </div>
+
+                <div class="profile-card">
+
+                    <div class="profile-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="profile-info">
+
+                        <h3 id="profile-name">
+                            Attendee
+                        </h3>
+
+                        <span>
+                            Student
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Dynamic Section -->
+
+            <section id="content-area">
+
+                <!-- dashboard.js loads sections here -->
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- Loading Overlay -->
+
+    <div id="loading-overlay">
+
+        <div class="loader"></div>
+
+    </div>
+
+    <!-- Toast notifications for not-yet-connected actions -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- JavaScript -->
+
+    <script src="config.js"></script>
+    <script src="attendee-dashboard.js"></script>
+
+</body>
+
+</html>
