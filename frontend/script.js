@@ -69,13 +69,21 @@ async function login(event) {
         // Save user info (optional)
         localStorage.setItem("user", JSON.stringify(result.data.user));
 
-        // Redirect based on the role chosen on the role-selection page
-        const selectedRole = localStorage.getItem("selectedRole");
+        // Redirect based on the account's actual role, not a stale
+        // localStorage flag (role-selection only sets this once, at
+        // signup — returning users logging back in need the role
+        // the backend has on file for them).
+        const role = (result.data.user.role || "").toLowerCase();
 
-        if (selectedRole === "attendee") {
+        if (role === "attendee") {
             window.location.href = "attendee-dashboard.html";
-        } else {
+        } else if (role === "organizer") {
             window.location.href = "dashboard.html";
+        } else {
+            // Volunteer dashboard isn't built yet; send them to
+            // role-selection so they see the "coming soon" state
+            // instead of landing on the wrong dashboard.
+            window.location.href = "role-selection.html";
         }
 
     } catch (err) {
