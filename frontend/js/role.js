@@ -2,9 +2,10 @@
    EVENTOS — ROLE SELECTION PAGE
    Lets the user pick a role card, persists it to the backend
    (PATCH /api/auth/role) once Continue is pressed, and routes
-   onward. Only the organizer dashboard exists so far, so the
-   other two roles surface a friendly "coming soon" note
-   instead of a dead link — but their role is saved either way.
+   onward. Organizer and attendee dashboards are both built;
+   only the volunteer dashboard surfaces a friendly "coming
+   soon" note instead of a dead link — but their role is saved
+   either way.
 ========================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,8 +70,13 @@ function initRoleSelection() {
         return;
       }
 
-      // Volunteer and Attendee dashboards aren't built yet, but the
-      // role is already saved server-side.
+      if (selectedRole === 'attendee') {
+        window.location.href = 'attendee-dashboard.html';
+        return;
+      }
+
+      // Volunteer dashboard isn't built yet, but the role is
+      // already saved server-side.
       showComingSoonNote();
       continueBtn.disabled = false;
 
@@ -97,7 +103,7 @@ function getOrCreateNote() {
     note = document.createElement('p');
     note.id = 'comingSoonNote';
     note.className = 'coming-soon-note';
-    note.textContent = 'That dashboard is coming soon — organizer access is ready now.';
+    note.textContent = 'That dashboard is coming soon — organizer and attendee access are ready now.';
     document.getElementById('continueBtn').insertAdjacentElement('afterend', note);
   }
   return note;
