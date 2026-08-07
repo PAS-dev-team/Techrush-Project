@@ -18,7 +18,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
     <!-- CSS -->
     <link rel="stylesheet" href="index.css">
 
@@ -224,13 +223,20 @@
 
                     <button
                         type="button"
-                        class="google-btn">
+                        class="google-btn"
+                        id="googleSignInBtn">
 
                         <i class="fa-brands fa-google"></i>
 
                         Continue with Google
 
                     </button>
+
+                    <!-- Google Identity Services renders its real button
+                         here (invisible). Clicking the styled button
+                         above forwards the click to it, so we keep our
+                         own look while using Google's official flow. -->
+                    <div id="googleButtonContainer" style="position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0;"></div>
 
                     <!-- Register -->
 
@@ -256,6 +262,7 @@
 
     <!-- JS -->
 
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="config.js"></script>
     <script src="script.js"></script>
 

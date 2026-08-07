@@ -20,6 +20,15 @@ class AuthController {
     }
   }
 
+  async googleAuth(req, res, next) {
+    try {
+      const result = await authService.googleAuth(req.body.idToken);
+      return success(res, result, "Signed in with Google");
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async me(req, res, next) {
     try {
       const user = await authService.me(req.user.id);
