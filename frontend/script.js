@@ -5,6 +5,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     initPasswordToggle();
     initLoginForm();
+    initGoogleSignIn();
 });
 
 function initPasswordToggle() {
@@ -63,31 +64,126 @@ async function login(event) {
             return;
         }
 
-        // Save JWT
-        localStorage.setItem("token", result.data.token);
-
-        // Save user info (optional)
-        localStorage.setItem("user", JSON.stringify(result.data.user));
-
-        // Redirect based on the account's actual role, not a stale
-        // localStorage flag (role-selection only sets this once, at
-        // signup — returning users logging back in need the role
-        // the backend has on file for them).
-        const role = (result.data.user.role || "").toLowerCase();
-
-        if (role === "attendee") {
-            window.location.href = "attendee-dashboard.html";
-        } else if (role === "organizer") {
-            window.location.href = "dashboard.html";
-        } else {
-            // Volunteer dashboard isn't built yet; send them to
-            // role-selection so they see the "coming soon" state
-            // instead of landing on the wrong dashboard.
-            window.location.href = "role-selection.html";
-        }
+        completeLogin(result.data);
 
     } catch (err) {
         console.error(err);
         alert("Unable to connect to server.");
     }
+}
+
+/* ==========================================================
+   GOOGLE SIGN-IN
+   Google Identity Services doesn't let us restyle its button,
+   so its real button is rendered into an invisible container
+   and our own "Continue with Google" button just forwards
+   its click there — same official, policy-compliant flow,
+   our own look.
+========================================================== */
+
+let googleSignInReady = false;
+
+function initGoogleSignIn() {
+
+    if (googleSignInReady) return;
+
+    if (!window.google || !window.google.accounts || !window.google.accounts.id) return;
+
+    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID.startsWith("YOUR_")) {
+        console.warn("[login] GOOGLE_CLIENT_ID isn't configured in config.js yet.");
+        return;
+    }
+
+    const container = document.getElementById("googleButtonContainer");
+    const trigger = document.getElementById("googleSignInBtn");
+
+    if (!container || !trigger) return;
+
+    google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+    });
+
+    google.accounts.id.renderButton(container, { type: "standard" });
+
+    trigger.addEventListener("click", () => {
+        const realButton = container.querySelector('div[role="button"]');
+
+        if (realButton) {
+            realButton.click();
+        } else {
+            alert("Google sign-in isn't ready yet — please try again in a moment.");
+        }
+    });
+
+    googleSignInReady = true;
+
+}
+
+// Fires as soon as the Google Identity Services script itself has
+// loaded, which can happen before or after DOMContentLoaded since the
+// script tag is async. Covers whichever order actually happens.
+window.onGoogleLibraryLoad = initGoogleSignIn;
+
+async function handleGoogleCredential(response) {
+
+    try {
+
+        const apiResponse = await fetch(`${API_URL}/api/auth/google`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                idToken: response.credential,
+            }),
+        });
+
+        const result = await apiResponse.json();
+
+        if (!apiResponse.ok) {
+            alert(result.message || "Google sign-in failed.");
+            return;
+        }
+
+        completeLogin(result.data);
+
+    } catch (err) {
+        console.error(err);
+        alert("Unable to connect to server.");
+    }
+
+}
+
+/* ==========================================================
+   SHARED POST-LOGIN REDIRECT
+   Used by both password login and Google sign-in.
+========================================================== */
+
+function completeLogin({ token, user }) {
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // A user who hasn't picked a role yet (brand-new sign-up, whether
+    // by password or Google) always goes through role-selection first,
+    // regardless of the ATTENDEE default their account starts with.
+    if (!user.roleSelected) {
+        window.location.href = "role-selection.html";
+        return;
+    }
+
+    const role = (user.role || "").toLowerCase();
+
+    if (role === "attendee") {
+        window.location.href = "attendee-dashboard.html";
+    } else if (role === "organizer") {
+        window.location.href = "dashboard.html";
+    } else {
+        // Volunteer dashboard isn't built yet; send them to
+        // role-selection so they see the "coming soon" state
+        // instead of landing on the wrong dashboard.
+        window.location.href = "role-selection.html";
+    }
+
 }

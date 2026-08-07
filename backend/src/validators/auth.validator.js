@@ -11,6 +11,10 @@ const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+const googleAuthSchema = z.object({
+  idToken: z.string().min(20, "A valid Google credential is required"),
+});
+
 // Self-service role selection is limited to the three roles the
 // role-selection page offers. ADMIN is intentionally excluded — it
 // must never be settable by a user through this endpoint.
@@ -33,4 +37,4 @@ const updateProfileSchema = z.object({
     .or(z.literal("").transform(() => undefined)),
 });
 
-module.exports = { registerSchema, loginSchema, selectRoleSchema, updateProfileSchema };
+module.exports = { registerSchema, loginSchema, googleAuthSchema, selectRoleSchema, updateProfileSchema };
