@@ -37,11 +37,11 @@ function initRoleSelection() {
     switch (selectedRole) {
 
         case "organizer":
-            window.location.href = "dashboard.html";
+            window.location.href = "../dashboard.html";
             break;
 
         case "attendee":
-            window.location.href = "attendee-dashboard.html";
+            window.location.href = "../attendee-dashboard.html";
             break;
 
         case "volunteer":
