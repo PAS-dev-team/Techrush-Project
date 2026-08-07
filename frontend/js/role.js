@@ -28,16 +28,32 @@ function initRoleSelection() {
   });
 
   continueBtn.addEventListener('click', () => {
+
     if (!selectedRole) return;
 
-    if (selectedRole === 'organizer') {
-      window.location.href = 'dashboard.html';
-      return;
+    // Save selected role
+    localStorage.setItem("selectedRole", selectedRole);
+
+    switch (selectedRole) {
+
+        case "organizer":
+            window.location.href = "dashboard.html";
+            break;
+
+        case "attendee":
+            window.location.href = "attendee-dashboard.html";
+            break;
+
+        case "volunteer":
+            window.location.href = "volunteer-dashboard.html";
+            break;
+
+        default:
+            showComingSoonNote();
+
     }
 
-    // Volunteer and Attendee dashboards aren't built yet.
-    showComingSoonNote();
-  });
+});
 }
 
 function showComingSoonNote() {
@@ -55,7 +71,7 @@ function getOrCreateNote() {
     note = document.createElement('p');
     note.id = 'comingSoonNote';
     note.className = 'coming-soon-note';
-    note.textContent = 'That dashboard is coming soon — organizer access is ready now.';
+    note.textContent = 'Selected dashboard is not available.';
     document.getElementById('continueBtn').insertAdjacentElement('afterend', note);
   }
   return note;

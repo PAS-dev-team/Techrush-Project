@@ -299,22 +299,22 @@ const pageTitles = {
 
     dashboard: {
         title: "Dashboard",
-        subtitle: "Welcome back! Here's your event overview."
+        subtitle: "Welcome back! Here's what's happening."
     },
 
     events: {
         title: "Events",
-        subtitle: "Browse and register for upcoming events."
+        subtitle: "Browse all available events."
     },
 
     tickets: {
         title: "My Tickets",
-        subtitle: "Manage your registrations and event passes."
+        subtitle: "View your registered events."
     },
 
     certificates: {
         title: "Certificates",
-        subtitle: "Download your earned certificates."
+        subtitle: "Download certificates you've earned."
     },
 
     profile: {
@@ -325,18 +325,14 @@ const pageTitles = {
 };
 
 const sections = {
-
     dashboard: "sections/attendee-dashboard-section.html",
-
     events: "sections/attendee-events-section.html",
-
     tickets: "sections/attendee-tickets-section.html",
-
     certificates: "sections/attendee-certificates-section.html",
-
     profile: "sections/attendee-profile-section.html"
-
 };
+
+
  loadSection("dashboard");
 
 
@@ -365,3 +361,13 @@ function updateHeader(section){
         pageTitles[section].subtitle;
 
 }
+
+document
+.getElementById("logoutBtn")
+.addEventListener("click", () => {
+
+    localStorage.removeItem("loggedInUser");
+
+    window.location.href="index.html";
+
+});
