@@ -1,9 +1,10 @@
 /* ==========================================================
    EVENTOS — ROLE SELECTION PAGE
-   Lets the user pick a role card, enables Continue once a
-   role is chosen, and routes onward. Only the organizer
-   dashboard exists so far, so the other two roles surface a
-   friendly "coming soon" note instead of a dead link.
+   Lets the user pick a role card, persists it to the backend
+   (PATCH /api/auth/role) once Continue is pressed, and routes
+   onward. Only the organizer dashboard exists so far, so the
+   other two roles surface a friendly "coming soon" note
+   instead of a dead link — but their role is saved either way.
 ========================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,30 +28,58 @@ function initRoleSelection() {
     });
   });
 
-  continueBtn.addEventListener('click', () => {
+  continueBtn.addEventListener('click', async () => {
+    if (!selectedRole || continueBtn.disabled) return;
 
-    if (!selectedRole) return;
+    const token = localStorage.getItem('token');
 
-    // Save selected role
-    localStorage.setItem("selectedRole", selectedRole);
-
-    switch (selectedRole) {
-
-        case "organizer":
-            window.location.href = "../dashboard.html";
-            break;
-
-        case "attendee":
-            window.location.href = "../attendee-dashboard.html";
-            break;
-
-        case "volunteer":
-        default:
-            showComingSoonNote();
-
+    if (!token) {
+      // No session to attach the role to — send them back to log in.
+      window.location.replace('index.html');
+      return;
     }
 
-});
+    continueBtn.disabled = true;
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/role`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role: selectedRole }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.message || 'Could not save your role. Please try again.');
+        continueBtn.disabled = false;
+        return;
+      }
+
+      // Refresh the stored token/user so the role change takes effect
+      // immediately elsewhere in the app.
+      localStorage.setItem('token', result.data.token);
+      localStorage.setItem('user', JSON.stringify(result.data.user));
+
+      if (selectedRole === 'organizer') {
+        window.location.href = 'dashboard.html';
+        return;
+      }
+
+      // Volunteer and Attendee dashboards aren't built yet, but the
+      // role is already saved server-side.
+      showComingSoonNote();
+      continueBtn.disabled = false;
+
+    } catch (error) {
+      console.error(error);
+      alert('Unable to connect to the server.');
+      continueBtn.disabled = false;
+    }
+  });
 }
 
 function showComingSoonNote() {
@@ -68,7 +97,7 @@ function getOrCreateNote() {
     note = document.createElement('p');
     note.id = 'comingSoonNote';
     note.className = 'coming-soon-note';
-    note.textContent = 'Selected dashboard is not available.';
+    note.textContent = 'That dashboard is coming soon — organizer access is ready now.';
     document.getElementById('continueBtn').insertAdjacentElement('afterend', note);
   }
   return note;

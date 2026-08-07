@@ -28,6 +28,24 @@ class AuthController {
       next(err);
     }
   }
+
+  async selectRole(req, res, next) {
+    try {
+      const result = await authService.selectRole(req.user.id, req.body.role);
+      return success(res, result, "Role updated");
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async updateProfile(req, res, next) {
+    try {
+      const user = await authService.updateProfile(req.user.id, req.body);
+      return success(res, user, "Profile updated");
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = new AuthController();

@@ -20,6 +20,8 @@ const token = localStorage.getItem("token");
 const contentArea = document.getElementById("content-area");
 const toastContainer = document.getElementById("toastContainer");
 
+let currentUser = null;
+
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -63,13 +65,20 @@ async function authenticate() {
         const result = await response.json();
 
         // Store latest user information
+        currentUser = result.data;
         localStorage.setItem("user", JSON.stringify(result.data));
 
-        // Update username if element exists
+        // Update sidebar/header profile card if elements exist
         const userName = document.getElementById("profile-name");
 
         if (userName) {
             userName.textContent = result.data.name;
+        }
+
+        const avatar = document.querySelector(".profile-avatar");
+
+        if (avatar) {
+            avatar.textContent = getInitials(result.data.name);
         }
 
         return true;
@@ -105,6 +114,9 @@ async function loadSection(sectionName) {
         }
 
         contentArea.innerHTML = await response.text();
+
+        await personalizeSection(sectionName);
+
         if (sectionName === "events") {
     initializeRegistrationPortal();
 }
@@ -248,11 +260,77 @@ function showToast(message) {
 }
 
 /* ==========================================================
+   SECTION PERSONALIZATION
+   Sections are injected asynchronously from sections/*.html,
+   so any element that needs the logged-in user's data has to
+   be populated after each section loads, not just once at
+   authenticate() time.
+========================================================== */
+
+function capitalize(value) {
+    if (!value) return "";
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
+async function personalizeSection(sectionName) {
+
+    if (!currentUser) return;
+
+    if (sectionName === "dashboard") {
+
+        const welcomeText = document.getElementById("welcome-text");
+
+        if (welcomeText) {
+            welcomeText.textContent = `Welcome back, ${firstName(currentUser.name)} 👋`;
+        }
+
+    }
+
+    if (sectionName === "settings") {
+
+        const fullNameInput = document.getElementById("settings-fullname");
+        const emailInput = document.getElementById("settings-email");
+        const roleInput = document.getElementById("settings-role");
+        const phoneInput = document.getElementById("settings-phone");
+
+        if (fullNameInput) fullNameInput.value = currentUser.name;
+        if (emailInput) emailInput.value = currentUser.email;
+        if (roleInput) roleInput.value = capitalize(currentUser.role);
+        if (phoneInput) phoneInput.value = currentUser.phone || "";
+
+        initializeSettingsForms();
+
+        if (currentUser.role === "ORGANIZER") {
+            await loadOrganizationDetails();
+        }
+
+    }
+
+}
+
+/* ==========================================================
    HELPERS
 ========================================================== */
 
 function wait(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function firstName(fullName) {
+    return (fullName || "").trim().split(/\s+/)[0] || "there";
+}
+
+function getInitials(fullName) {
+
+    const parts = (fullName || "").trim().split(/\s+/).filter(Boolean);
+
+    if (!parts.length) return "?";
+
+    const initials = parts.length === 1
+        ? parts[0].slice(0, 2)
+        : parts[0][0] + parts[parts.length - 1][0];
+
+    return initials.toUpperCase();
 }
 
 function escapeHtml(value) {
@@ -295,73 +373,173 @@ function initializeRegistrationPortal() {
     // deleteRegistrationLink
 }
 
-const pageTitles = {
+/* ==========================================================
+   SETTINGS — PROFILE & ORGANIZATION
+========================================================== */
 
-    dashboard: {
-        title: "Dashboard",
-        subtitle: "Welcome back! Here's your event overview."
-    },
+function initializeSettingsForms() {
 
-    events: {
-        title: "Events",
-        subtitle: "Browse and register for upcoming events."
-    },
+    // Sections are re-fetched (and their inner elements replaced) each
+    // time they're navigated to, so it's correct to re-attach listeners
+    // on the fresh elements every time — the old nodes (and their
+    // listeners) are discarded along with the old innerHTML.
+    const profileForm = document.getElementById("profile-form");
 
-    tickets: {
-        title: "My Tickets",
-        subtitle: "Manage your registrations and event passes."
-    },
-
-    certificates: {
-        title: "Certificates",
-        subtitle: "Download your earned certificates."
-    },
-
-    profile: {
-        title: "My Profile",
-        subtitle: "Manage your account information."
+    if (profileForm) {
+        profileForm.addEventListener("submit", handleProfileSubmit);
     }
 
-};
+    const orgForm = document.getElementById("org-details-form");
 
-const sections = {
+    if (orgForm) {
+        orgForm.addEventListener("submit", handleOrganizationSubmit);
+    }
 
-    dashboard: "sections/attendee-dashboard-section.html",
+}
 
-    events: "sections/attendee-events-section.html",
+async function handleProfileSubmit(event) {
 
-    tickets: "sections/attendee-tickets-section.html",
+    event.preventDefault();
 
-    certificates: "sections/attendee-certificates-section.html",
+    const name = document.getElementById("settings-fullname").value.trim();
+    const phone = document.getElementById("settings-phone").value.trim();
 
-    profile: "sections/attendee-profile-section.html"
+    if (name.length < 2) {
+        showToast("Name must be at least 2 characters.");
+        return;
+    }
 
-};
- loadSection("dashboard");
+    const submitBtn = event.target.querySelector("button[type=submit]");
+    if (submitBtn) submitBtn.disabled = true;
 
+    try {
 
-document.querySelectorAll(".nav-item").forEach(button => {
+        const response = await fetch(`${API_URL}/api/auth/profile`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name, phone }),
+        });
 
-    button.addEventListener("click", () => {
+        const result = await response.json();
 
-        document
-            .querySelectorAll(".nav-item")
-            .forEach(item => item.classList.remove("active"));
+        if (!response.ok) {
+            const message = Array.isArray(result.error) && result.error.length
+                ? result.error[0].message
+                : (result.message || "Could not save your profile.");
+            showToast(message);
+            return;
+        }
 
-        button.classList.add("active");
+        currentUser = { ...currentUser, ...result.data };
+        localStorage.setItem("user", JSON.stringify(currentUser));
 
-        loadSection(button.dataset.section);
+        const profileNameEl = document.getElementById("profile-name");
+        if (profileNameEl) profileNameEl.textContent = currentUser.name;
 
-    });
+        const avatarEl = document.querySelector(".profile-avatar");
+        if (avatarEl) avatarEl.textContent = getInitials(currentUser.name);
 
-});
+        showToast("Profile updated.");
 
-function updateHeader(section){
+    } catch (error) {
 
-    document.getElementById("page-title").textContent =
-        pageTitles[section].title;
+        console.error(error);
+        showToast("Unable to connect to the server.");
 
-    document.getElementById("page-subtitle").textContent =
-        pageTitles[section].subtitle;
+    } finally {
+
+        if (submitBtn) submitBtn.disabled = false;
+
+    }
+
+}
+
+async function loadOrganizationDetails() {
+
+    try {
+
+        const response = await fetch(`${API_URL}/api/organizations/me`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) return;
+
+        const result = await response.json();
+        const org = result.data;
+
+        if (!org) return;
+
+        const nameInput = document.getElementById("org-name");
+        const typeInput = document.getElementById("org-type");
+        const emailInput = document.getElementById("org-contact-email");
+        const addressInput = document.getElementById("org-address");
+
+        if (nameInput) nameInput.value = org.name || "";
+        if (typeInput) typeInput.value = org.type || "";
+        if (emailInput) emailInput.value = org.contactEmail || "";
+        if (addressInput) addressInput.value = org.address || "";
+
+    } catch (error) {
+
+        console.error("[dashboard] Failed to load organization details:", error);
+
+    }
+
+}
+
+async function handleOrganizationSubmit(event) {
+
+    event.preventDefault();
+
+    const name = document.getElementById("org-name").value.trim();
+    const type = document.getElementById("org-type").value;
+    const contactEmail = document.getElementById("org-contact-email").value.trim();
+    const address = document.getElementById("org-address").value.trim();
+
+    if (name.length < 2) {
+        showToast("Organization name must be at least 2 characters.");
+        return;
+    }
+
+    const submitBtn = event.target.querySelector("button[type=submit]");
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+
+        const response = await fetch(`${API_URL}/api/organizations/me`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name, type, contactEmail, address }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            const message = Array.isArray(result.error) && result.error.length
+                ? result.error[0].message
+                : (result.message || "Could not save organization details.");
+            showToast(message);
+            return;
+        }
+
+        showToast("Organization details saved.");
+
+    } catch (error) {
+
+        console.error(error);
+        showToast("Unable to connect to the server.");
+
+    } finally {
+
+        if (submitBtn) submitBtn.disabled = false;
+
+    }
 
 }
