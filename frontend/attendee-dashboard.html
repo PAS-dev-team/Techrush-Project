@@ -8,6 +8,7 @@
     <title>EventOS | Attendee Dashboard</title>
 
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="attendee-dashboard.css">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -81,7 +82,7 @@
 
             <div class="sidebar-bottom">
 
-                <button class="logout-btn" id="logoutBtn">
+                <button class="logout-btn js-logout" id="logoutBtn">
 
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
@@ -155,9 +156,14 @@
 
     </div>
 
+    <!-- Toast notifications for not-yet-connected actions -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <!-- JavaScript -->
 
+    <script src="config.js"></script>
     <script src="attendee-dashboard.js"></script>
 
+</body>
 
 </html>

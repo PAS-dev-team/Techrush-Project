@@ -1,5 +1,5 @@
 /* ==========================================================
-   EVENTOS — ORGANIZER DASHBOARD (SPA)
+   EVENTOS — ATTENDEE DASHBOARD (SPA)
    ----------------------------------------------------------
    Responsibilities:
      1. Verify JWT before allowing access
@@ -10,7 +10,7 @@
      6. Show stub toasts
 ========================================================== */
 
-const SECTION_PATH = (name) => `sections/${name}-section.html`;
+const SECTION_PATH = (name) => `sections/attendee-${name}-section.html`;
 
 const FADE_MS = 180;
 const TOAST_MS = 2800;
@@ -295,79 +295,3 @@ function initializeRegistrationPortal() {
     // deleteRegistrationLink
 }
 
-const pageTitles = {
-
-    dashboard: {
-        title: "Dashboard",
-        subtitle: "Welcome back! Here's what's happening."
-    },
-
-    events: {
-        title: "Events",
-        subtitle: "Browse all available events."
-    },
-
-    tickets: {
-        title: "My Tickets",
-        subtitle: "View your registered events."
-    },
-
-    certificates: {
-        title: "Certificates",
-        subtitle: "Download certificates you've earned."
-    },
-
-    profile: {
-        title: "My Profile",
-        subtitle: "Manage your account information."
-    }
-
-};
-
-const sections = {
-    dashboard: "sections/attendee-dashboard-section.html",
-    events: "sections/attendee-events-section.html",
-    tickets: "sections/attendee-tickets-section.html",
-    certificates: "sections/attendee-certificates-section.html",
-    profile: "sections/attendee-profile-section.html"
-};
-
-
- loadSection("dashboard");
-
-
-document.querySelectorAll(".nav-item").forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        document
-            .querySelectorAll(".nav-item")
-            .forEach(item => item.classList.remove("active"));
-
-        button.classList.add("active");
-
-        loadSection(button.dataset.section);
-
-    });
-
-});
-
-function updateHeader(section){
-
-    document.getElementById("page-title").textContent =
-        pageTitles[section].title;
-
-    document.getElementById("page-subtitle").textContent =
-        pageTitles[section].subtitle;
-
-}
-
-document
-.getElementById("logoutBtn")
-.addEventListener("click", () => {
-
-    localStorage.removeItem("loggedInUser");
-
-    window.location.href="index.html";
-
-});

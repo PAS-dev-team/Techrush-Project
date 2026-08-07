@@ -1,0 +1,702 @@
+/* ==========================================================
+   EVENTOS ATTENDEE DASHBOARD
+   ----------------------------------------------------------
+   Loaded AFTER dashboard.css on attendee-dashboard.html.
+   dashboard.css supplies the shared foundation this file
+   builds on: the Google font import, CSS reset, design
+   tokens (:root), animation keyframes, and components that
+   are identical on both dashboards (.nav-item, .logout-btn,
+   .profile-card/.profile-avatar/.profile-info header widget,
+   .glass-card, .empty-state, .toast, scrollbar, etc).
+
+   This file only adds what's different about the attendee
+   shell (its class names differ from the organizer shell)
+   and the attendee-only sections, using the same colors,
+   radii, shadows, gradients and motion as the organizer
+   dashboard so both feel like one product.
+   ----------------------------------------------------------
+   Contents:
+     1. Background
+     2. App Shell (sidebar / topbar / content area overrides)
+     3. Loading Overlay
+     4. Attendee Home (stats, upcoming events, announcements, countdown)
+     5. Events / Tickets / Certificates (shared card pattern)
+     6. Profile Section
+     7. Responsive
+========================================================== */
+
+/* ==========================================================
+   1. BACKGROUND
+   Same gradient + glow treatment as the organizer dashboard's
+   .background-gradient, under the class name this page uses.
+========================================================== */
+
+.background-blur{
+    position:fixed;
+    inset:0;
+    z-index:-5;
+    background:var(--bg-gradient);
+}
+
+.background-blur::before{
+    content:"";
+    position:absolute;
+    width:520px;
+    height:520px;
+    border-radius:50%;
+    top:-180px;
+    left:-150px;
+    background:var(--glow-blue);
+    filter:blur(140px);
+}
+
+.background-blur::after{
+    content:"";
+    position:absolute;
+    width:520px;
+    height:520px;
+    border-radius:50%;
+    bottom:-180px;
+    right:-120px;
+    background:var(--glow-pink);
+    filter:blur(150px);
+}
+
+/* ==========================================================
+   2. APP SHELL
+========================================================== */
+
+.main-content{
+    flex:1;
+    min-width:0;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    gap:var(--shell-gap);
+    overflow:hidden;
+}
+
+/* Reassert the sidebar's intended (less transparent) glass
+   look. This element also carries the shared .glass-card
+   utility class, which is declared later in dashboard.css and
+   would otherwise partially override these values. */
+.sidebar{
+    padding:28px 22px;
+    background:var(--glass-sidebar);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-sidebar);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:45px;
+}
+
+.logo-icon{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:var(--gradient-primary);
+    color:#fff;
+    font-size:22px;
+    box-shadow:var(--shadow-icon);
+    transition:var(--transition);
+}
+
+.logo-icon:hover{
+    transform:rotate(8deg) scale(1.05);
+}
+
+.logo-text span{
+    display:block;
+    margin-top:4px;
+    color:var(--text-muted);
+    font-size:.85rem;
+}
+
+/* Navigation — .nav-item itself (base / hover / active) is
+   shared from dashboard.css, only spacing + layout is added */
+.sidebar-nav{
+    display:flex;
+    flex-direction:column;
+    flex:1 1 auto;
+}
+
+.sidebar-nav .nav-item{
+    margin-bottom:8px;
+}
+
+.sidebar-bottom{
+    margin-top:auto;
+}
+
+/* Header — mirrors the organizer's .top-header */
+.topbar{
+    flex-shrink:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:14px 22px;
+    border-radius:var(--radius-lg);
+    background:var(--glass-header);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border:1px solid var(--glass-border-soft);
+    box-shadow:var(--shadow-card);
+}
+
+#page-title{
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--text-heading);
+}
+
+#page-subtitle{
+    margin-top:4px;
+    color:var(--text-muted);
+    font-size:.85rem;
+}
+
+/* Content area — the organizer's equivalent (.content-area)
+   targets a class; this page swaps sections into an id. */
+#content-area{
+    flex:1;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:var(--shell-gap);
+    padding-right:4px;
+    transition:opacity var(--transition), transform var(--transition);
+}
+
+#content-area.is-fading{
+    opacity:0;
+    transform:translateY(8px);
+}
+
+.fade-in{
+    animation:fadeInUp .5s ease;
+}
+
+/* ==========================================================
+   3. LOADING OVERLAY
+========================================================== */
+
+#loading-overlay{
+    position:fixed;
+    inset:0;
+    z-index:999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--bg-gradient);
+    animation:loaderFadeOut .5s ease .5s forwards;
+}
+
+.loader{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    border:4px solid rgba(99,168,255,.25);
+    border-top-color:var(--accent-blue);
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    to{ transform:rotate(360deg); }
+}
+
+@keyframes loaderFadeOut{
+    to{ opacity:0; visibility:hidden; pointer-events:none; }
+}
+
+/* ==========================================================
+   4. ATTENDEE HOME
+========================================================== */
+
+.welcome-banner h2{
+    font-size:1.5rem;
+    font-weight:700;
+    color:var(--text-heading);
+    margin-bottom:8px;
+}
+
+.welcome-banner p{
+    color:var(--text-muted);
+    font-size:.95rem;
+    max-width:520px;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:22px;
+}
+
+/* .stat-card already gets its glass background, radius,
+   shadow, hover-lift and entrance animation from the shared
+   .stat-card + .glass-card rules in dashboard.css — this just
+   lays out the icon + number pairing this page uses. */
+.stat-card{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.stat-icon{
+    width:52px;
+    height:52px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:16px;
+    background:var(--gradient-primary);
+    color:#fff;
+    font-size:20px;
+}
+
+.stat-info h3{
+    color:var(--text-heading);
+    font-size:1.7rem;
+    font-weight:700;
+}
+
+.stat-info p{
+    margin-top:2px;
+    color:var(--text-faint);
+    font-size:.85rem;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:24px;
+}
+
+.dashboard-card{
+    display:flex;
+    flex-direction:column;
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.card-header h3{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:1.1rem;
+    font-weight:700;
+    color:var(--text-heading);
+}
+
+.card-header i{
+    color:var(--accent-blue);
+}
+
+.event-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.event-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:18px;
+    border-radius:18px;
+    background:var(--glass-card-strong);
+    border:1px solid var(--glass-border);
+    transition:var(--transition);
+}
+
+.event-item:hover{
+    transform:translateX(4px);
+    box-shadow:var(--shadow-card);
+}
+
+.event-item h4{
+    color:var(--text-heading);
+    font-size:.95rem;
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+.event-item p{
+    color:var(--text-muted);
+    font-size:.82rem;
+}
+
+.event-item .primary-btn{
+    flex:none;
+    padding:10px 18px;
+    font-size:.85rem;
+}
+
+.announcement-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.announcement-item{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    padding:14px 16px;
+    border-radius:16px;
+    background:rgba(255,255,255,.35);
+    transition:var(--transition);
+}
+
+.announcement-item:hover{
+    background:rgba(255,255,255,.5);
+}
+
+.announcement-item i{
+    margin-top:2px;
+    color:var(--accent-blue);
+    font-size:16px;
+}
+
+.announcement-item span{
+    color:var(--text-body);
+    font-size:.88rem;
+    line-height:1.6;
+}
+
+.countdown-card{
+    text-align:center;
+}
+
+.countdown-container{
+    display:flex;
+    justify-content:center;
+    gap:24px;
+    margin-top:8px;
+}
+
+.count-box{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    min-width:80px;
+    padding:18px 10px;
+    border-radius:18px;
+    background:var(--glass-card-strong);
+    border:1px solid var(--glass-border);
+}
+
+.count-box h2{
+    font-size:2rem;
+    font-weight:800;
+    color:var(--text-heading);
+}
+
+.count-box span{
+    font-size:.78rem;
+    font-weight:600;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+/* ==========================================================
+   5. EVENTS / TICKETS / CERTIFICATES
+   Shared by attendee-events-section, attendee-tickets-section
+   and attendee-certificates-section — all three use the same
+   card pattern.
+========================================================== */
+
+.section-header-card{
+    margin-bottom:28px;
+}
+
+.section-header h2{
+    font-size:28px;
+    font-weight:700;
+    color:#2b3553;
+    margin-bottom:8px;
+}
+
+.section-header p{
+    color:#64748b;
+    font-size:15px;
+}
+
+.events-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(360px, 1fr));
+    gap:24px;
+}
+
+.attendee-event-card{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    padding:28px;
+    transition:.35s;
+}
+
+.attendee-event-card:hover{
+    transform:translateY(-8px);
+}
+
+.attendee-event-card h3{
+    font-size:22px;
+    font-weight:600;
+    color:#2d3556;
+}
+
+.event-description{
+    color:#667085;
+    font-size:15px;
+    line-height:1.7;
+}
+
+.event-status{
+    width:max-content;
+    padding:8px 16px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.event-status.open{
+    background:rgba(61,220,132,.15);
+    color:#0b8f47;
+}
+
+.event-status.closed{
+    background:rgba(255,95,95,.15);
+    color:#d83a3a;
+}
+
+.event-details{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.event-details div{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#55627d;
+    font-size:15px;
+}
+
+.event-details i{
+    width:22px;
+    color:#5d6cf2;
+}
+
+.event-actions{
+    display:flex;
+    gap:14px;
+    margin-top:auto;
+}
+
+.primary-btn{
+    flex:1;
+    border:none;
+    border-radius:14px;
+    padding:14px 18px;
+    cursor:pointer;
+    font-weight:600;
+    color:#fff;
+    background:linear-gradient(135deg, #7b8cff, #62b9ff);
+    transition:.3s;
+}
+
+.primary-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 30px rgba(108,145,255,.28);
+}
+
+.primary-btn:disabled{
+    cursor:not-allowed;
+    opacity:.6;
+    box-shadow:none;
+}
+
+.secondary-btn{
+    flex:1;
+    border:none;
+    border-radius:14px;
+    padding:14px 18px;
+    cursor:pointer;
+    font-weight:600;
+    background:rgba(255,255,255,.45);
+    backdrop-filter:blur(18px);
+    color:#4d5c79;
+    transition:.3s;
+}
+
+.secondary-btn:hover{
+    transform:translateY(-3px);
+    background:rgba(255,255,255,.65);
+}
+
+/* ==========================================================
+   6. PROFILE SECTION
+========================================================== */
+
+.profile-page-card{
+    padding:35px;
+}
+
+.profile-top{
+    display:flex;
+    align-items:center;
+    gap:24px;
+    margin-bottom:35px;
+}
+
+.profile-page-avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg, #7b8cff, #62b9ff);
+    color:#fff;
+    font-size:34px;
+    box-shadow:0 10px 25px rgba(110,140,255,.25);
+}
+
+.profile-top h2{
+    color:#2d3556;
+    margin-bottom:6px;
+}
+
+.profile-top p{
+    color:#64748b;
+}
+
+.profile-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:22px;
+}
+
+.profile-field{
+    display:flex;
+    flex-direction:column;
+}
+
+.profile-field label{
+    margin-bottom:8px;
+    font-size:14px;
+    font-weight:600;
+    color:#64748b;
+}
+
+.profile-field input{
+    border:none;
+    outline:none;
+    background:rgba(255,255,255,.45);
+    backdrop-filter:blur(16px);
+    border-radius:14px;
+    padding:14px 18px;
+    font-size:15px;
+    color:#2d3556;
+}
+
+.profile-actions{
+    display:flex;
+    gap:18px;
+    margin-top:35px;
+}
+
+/* ==========================================================
+   7. RESPONSIVE
+   Mirrors the breakpoints and mobile app-shell degradation
+   already defined for the organizer dashboard in dashboard.css,
+   applied to this page's own shell class names.
+========================================================== */
+
+@media (max-width:1300px){
+
+    .stats-grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width:992px){
+
+    .sidebar-nav{
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:10px;
+    }
+
+    .main-content{
+        height:auto;
+        overflow:visible;
+    }
+
+    #content-area{
+        overflow:visible;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:stretch;
+        gap:16px;
+    }
+}
+
+@media (max-width:768px){
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .events-grid{
+        grid-template-columns:1fr;
+    }
+
+    .event-actions{
+        flex-direction:column;
+    }
+
+    .profile-actions{
+        flex-direction:column;
+    }
+}
+
+@media (max-width:520px){
+
+    .logo{
+        justify-content:center;
+    }
+
+    .event-item{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .countdown-container{
+        flex-wrap:wrap;
+    }
+}

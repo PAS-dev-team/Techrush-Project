@@ -45,9 +45,6 @@ function initRoleSelection() {
             break;
 
         case "volunteer":
-            window.location.href = "volunteer-dashboard.html";
-            break;
-
         default:
             showComingSoonNote();
 

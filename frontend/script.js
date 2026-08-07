@@ -69,8 +69,14 @@ async function login(event) {
         // Save user info (optional)
         localStorage.setItem("user", JSON.stringify(result.data.user));
 
-        // Redirect
-        window.location.href = "dashboard.html";
+        // Redirect based on the role chosen on the role-selection page
+        const selectedRole = localStorage.getItem("selectedRole");
+
+        if (selectedRole === "attendee") {
+            window.location.href = "attendee-dashboard.html";
+        } else {
+            window.location.href = "dashboard.html";
+        }
 
     } catch (err) {
         console.error(err);
