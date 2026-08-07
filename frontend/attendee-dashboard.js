@@ -20,6 +20,8 @@ const token = localStorage.getItem("token");
 const contentArea = document.getElementById("content-area");
 const toastContainer = document.getElementById("toastContainer");
 
+let currentUser = null;
+
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -63,13 +65,20 @@ async function authenticate() {
         const result = await response.json();
 
         // Store latest user information
+        currentUser = result.data;
         localStorage.setItem("user", JSON.stringify(result.data));
 
-        // Update username if element exists
+        // Update topbar profile card if elements exist
         const userName = document.getElementById("profile-name");
 
         if (userName) {
             userName.textContent = result.data.name;
+        }
+
+        const avatar = document.querySelector(".profile-avatar");
+
+        if (avatar) {
+            avatar.textContent = getInitials(result.data.name);
         }
 
         return true;
@@ -105,6 +114,9 @@ async function loadSection(sectionName) {
         }
 
         contentArea.innerHTML = await response.text();
+
+        personalizeSection(sectionName);
+
         if (sectionName === "events") {
     initializeRegistrationPortal();
 }
@@ -248,11 +260,71 @@ function showToast(message) {
 }
 
 /* ==========================================================
+   SECTION PERSONALIZATION
+   Sections are injected asynchronously from sections/*.html,
+   so any element that needs the logged-in user's data has to
+   be populated after each section loads, not just once at
+   authenticate() time.
+========================================================== */
+
+function personalizeSection(sectionName) {
+
+    if (!currentUser) return;
+
+    if (sectionName === "dashboard") {
+
+        const nameSpan = document.getElementById("attendee-name");
+
+        if (nameSpan) {
+            nameSpan.textContent = firstName(currentUser.name);
+        }
+
+    }
+
+    if (sectionName === "profile") {
+
+        const profileName = document.getElementById("profileName");
+        const fullNameInput = document.getElementById("profile-fullname");
+        const emailInput = document.getElementById("profile-email");
+        const phoneInput = document.getElementById("profile-phone");
+
+        if (profileName) profileName.textContent = currentUser.name;
+        if (fullNameInput) fullNameInput.value = currentUser.name;
+        if (emailInput) emailInput.value = currentUser.email;
+        if (phoneInput) phoneInput.value = currentUser.phone || "";
+
+        // College isn't a real profile field in the backend yet, so
+        // attendee-profile-section.html keeps it as an example value
+        // (Pune Institute of Computer Technology) instead of blank.
+
+    }
+
+}
+
+/* ==========================================================
    HELPERS
 ========================================================== */
 
 function wait(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function firstName(fullName) {
+    return (fullName || "").trim().split(/\s+/)[0] || "there";
+}
+
+function getInitials(fullName) {
+
+    const parts = (fullName || "").trim().split(/\s+/).filter(Boolean);
+
+    if (!parts.length) return "?";
+
+    const initials = parts.length === 1
+        ? parts[0].slice(0, 2)
+        : parts[0][0] + parts[parts.length - 1][0];
+
+    return initials.toUpperCase();
+
 }
 
 function escapeHtml(value) {
